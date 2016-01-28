@@ -9,7 +9,7 @@ module TokenPagination
 
     def self.from_string(token_string)
       begin 
-        claims, header = JWT.decode(token_string, Rails.application.secrets.secret_key_base)
+        claims, header = JWT.decode(token_string, 'secret')
         return self.new(claims["_ext"]["c_hash"], claims["_ext"]["pointer_instance"])
       rescue JWT::DecodeError => e
         raise TokenPagination::JWTDecodeError.new("token not decoded: #{e.to_s}")
@@ -22,7 +22,7 @@ module TokenPagination
           c_hash: @c_hash,
           pointer_instance: @pointer_instance
         }
-      }, Rails.application.secrets.secret_key_base)
+      }, 'secret')
     end
 
     def verify_c_hash!(c_hash_string)
